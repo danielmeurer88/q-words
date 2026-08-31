@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>qw-words</title>
+  </head>
+  <body>
+
+    <div id="status-bar">
+
+      <div class="status-current-container">
+        Status: <span class="status-text"></span>
+      </div>
+
+      <div class="allowed-current-container">
+        Allowed: <span class="allowed-text"></span>
+      </div>
+
+      <div class="solutions-current-container">
+        Solutions: <span class="solutions-text"></span>
+      </div>
+
+    </div>
+
+    <div id="app">
+
+      
+
+      <div class="form">
+
+        <div class="input-field">
+          <input name="Letter 1" pattern="[A-Z_]{1}" placeholder="1" class="letter letter-1">
+          <input name="Letter 2" placeholder="2" class="letter letter-2">
+          <input name="Letter 3" placeholder="3" class="letter letter-3">
+          <input name="Letter 4" placeholder="4" class="letter letter-4">
+          <input name="Letter 5" placeholder="5" class="letter letter-5">
+        </div>
+
+        <div class="greys">
+          <textarea placeholder="Grey Letters" class="grey-letters"></textarea>
+        </div>
+
+        <button id="GET_WORDS">Get Words</button>
+
+        <div class="matches-container"></div>
+
+      </div>
+
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
