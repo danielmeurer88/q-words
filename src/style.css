@@ -81,13 +81,23 @@ p {
   margin: 0;
 }
 
-#status-bar {
+.bar {
+
   display: flex;
   flex-direction: row;
   gap: 2ch;
   margin-inline: 1ch;
   flex-wrap: wrap;
-  position: absolute;
+
+  div {
+    display: flex;
+    align-items: self-end;
+  }
+
+}
+
+#status-bar {
+  
 }
 
 #app {
@@ -116,6 +126,9 @@ p {
 
     padding: 1ch;
 
+    max-width: 80ch;
+    min-width: 12ch;
+
     .input-field {
 
       .letter {
@@ -124,7 +137,7 @@ p {
         height: 54px;
         font-size: 46px;
 
-        border: 2px solid grey;
+        border: 2px solid rgb(29, 158, 3);
         border-radius: 0.2ch;
 
         text-align: center;
@@ -132,13 +145,34 @@ p {
 
     }
 
+    .letter-area {
+      border: 2px solid grey;
+      border-radius: 0.2ch;
+      font-size: 1rem;
+      padding: 1ch;
+    }
+
+    .yellow-letters {
+      border-color: rgb(251, 255, 2);
+    }
+
+    .grey-letters {
+      border-color: rgb(87, 87, 86);
+    }
+
     .matches-container {
       border: 2px solid grey;
       border-radius: 0.2ch;
       font-size: 1.2rem;
-      min-height: 60px;
-      height: 100%;
       padding: 1ch;
+
+      interpolate-size: allow-keywords;
+      height: auto;
+      transition: height 300ms ease-in-out, content-visibility 300ms allow-discrete;
+
+      &#allowed-matches {
+        display: none;
+      }
     }
 
   }

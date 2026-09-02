@@ -19,6 +19,8 @@ function getInputFields() {
 
 function getMatches() {
 
+  const allWords = (document.body.querySelector('#all-words-cb') as HTMLInputElement).checked;
+
   const [inputLetter1, inputLetter2, inputLetter3, inputLetter4, inputLetter5] = getInputFields();
   
   const word = [
@@ -29,26 +31,45 @@ function getMatches() {
     inputLetter5.value.slice(0, 1).toUpperCase() || '_'
   ].join('');
 
+  const yellowsTextArea = (document.querySelector('.yellow-letters') as HTMLTextAreaElement);
+
+  const yellows = (yellowsTextArea.value || '');
+
   const greysTextArea = (document.querySelector('.grey-letters') as HTMLTextAreaElement);
 
   const greys = (greysTextArea.value || '');
 
-  const matches: string[] = [];
+  const solutionMatches: string[] = [];
+  const allowedMatches: string[] = [];
 
   WORDS.solutions.forEach(sol => {
-    if (wordMatches(sol, word, greys)) {
-      matches.push(sol);
+    if (wordMatches(sol, word, yellows, greys)) {
+      solutionMatches.push(sol);
     }
   });
 
-  console.log('get words =>', word, greys, matches);
+  if (allWords) {
+    WORDS.allowed.forEach(sol => {
+      if (wordMatches(sol, word, yellows, greys)) {
+        allowedMatches.push(sol);
+      }
+    });
+  }
 
-  return matches;
+  console.log('get words =>', {word, yellows, greys, realMatches: solutionMatches, wrongMatches: allowedMatches});
+
+  return {solutionMatches, allowedMatches};
 
 }
 
-function wordMatches(word: string, input: string, greys = '') {
+function wordMatches(word: string, input: string, yellows = '', greys = '') {
   if (typeof word !== 'string' || typeof input !== 'string') {
+    return false;
+  }
+
+  const wordIncludesAllYellows = yellows.split('').every(c => word.includes(c));
+
+  if (!wordIncludesAllYellows) {
     return false;
   }
 
@@ -151,12 +172,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
   updateStatus();
 
+  const allWordsCB = (document.body.querySelector('#all-words-cb') as HTMLInputElement);
+  allWordsCB.addEventListener('input', () => {
+
+    const div = (document.body.querySelector('#allowed-matches') as HTMLDivElement);
+    
+    if (allWordsCB.checked) {
+      div.style.display = 'inherit';
+    } else {
+      div.style.display = 'none';
+    }
+
+  });
+
   const b = document.querySelector('#GET_WORDS') as HTMLButtonElement;
 
   b.addEventListener('click', () => {
     const matches = getMatches();
-    const div = document.body.querySelector('.matches-container') as HTMLDivElement;
-    div.innerText = matches.join(', ');
+    const divs = document.body.querySelectorAll('.matches-container');
+    (divs[0] as HTMLDivElement).innerText = matches.solutionMatches.join(', ');
+    (divs[1] as HTMLDivElement).innerText = matches.allowedMatches.join(', ');
   });
 
   const inputLetters = getInputFields();
@@ -195,11 +230,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   });
 
+  const yellowsTA = document.body.querySelector('.yellow-letters') as HTMLTextAreaElement;
+
   const greysTA = document.body.querySelector('.grey-letters') as HTMLTextAreaElement;
 
-  greysTA.addEventListener('input', e => {
-    
-    const upperText = greysTA.value.toUpperCase();
+  function taInputHandler(e: InputEvent) {
+    const ta = e.target as HTMLTextAreaElement;
+
+    const upperText = ta.value.toUpperCase();
     const cc = (e.data || '').charCodeAt(0);
     console.log('input ', e.data, cc);
 
@@ -207,7 +245,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let finalText = upperText.split('').filter(c => c.charCodeAt(0) >= min && c.charCodeAt(0) <= max).join('');
     
-    greysTA.value = finalText;
-  });
+    ta.value = finalText;
+  }
+
+  yellowsTA.addEventListener('input', taInputHandler);
+  greysTA.addEventListener('input', taInputHandler);
 
 });
