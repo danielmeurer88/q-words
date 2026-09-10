@@ -185,13 +185,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
   });
 
-  const b = document.querySelector('#GET_WORDS') as HTMLButtonElement;
+  const getWordsButton = document.querySelector('#GET_WORDS') as HTMLButtonElement;
 
-  b.addEventListener('click', () => {
+  getWordsButton.addEventListener('click', () => {
     const matches = getMatches();
     const divs = document.body.querySelectorAll('.matches-container');
     (divs[0] as HTMLDivElement).innerText = matches.solutionMatches.join(', ');
     (divs[1] as HTMLDivElement).innerText = matches.allowedMatches.join(', ');
+  });
+
+  const resetButton = document.querySelector('#RESET_BTN') as HTMLButtonElement;
+
+  resetButton.addEventListener('click', () => {
+    let elements = document.querySelectorAll('.form input');
+    elements.forEach(el => {
+      (el as HTMLInputElement).value = '';
+    });
+    elements = document.querySelectorAll('.form textarea');
+    elements.forEach(el => {
+      (el as HTMLTextAreaElement).value = '';
+    });
+    elements = document.querySelectorAll('.form .matches-container');
+    elements.forEach(el => {
+      (el as HTMLDivElement).innerHTML = '';
+    });
   });
 
   const inputLetters = getInputFields();

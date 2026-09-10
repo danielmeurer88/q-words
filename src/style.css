@@ -129,6 +129,19 @@ p {
     max-width: 80ch;
     min-width: 12ch;
 
+    .reset-bar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex: 1 1 auto;
+
+      #RESET_BTN {
+        padding: 1.5ch;
+        border-radius: 2ch;
+        corner-shape: squircle;
+      }
+    }
+
     .input-field {
 
       .letter {
@@ -173,6 +186,12 @@ p {
       &#allowed-matches {
         display: none;
       }
+    }
+
+    button#GET_WORDS {
+      padding: 2ch;
+      border-radius: 2ch;
+      corner-shape: squircle;
     }
 
   }
