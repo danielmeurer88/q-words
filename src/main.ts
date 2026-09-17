@@ -1,5 +1,7 @@
 import { SCRIPT_CONTENT } from './list';
 import './style.css'
+import { addEasyTooltip } from './tooltip.functions';
+
 
 const WORDS = {
   allowed: new Set<string>(),
@@ -19,7 +21,7 @@ function getInputFields() {
 
 function getMatches() {
 
-  const allWords = (document.body.querySelector('#all-words-cb') as HTMLInputElement).checked;
+  const allWordsCb = (document.body.querySelector('#all-words-cb') as HTMLInputElement).checked;
 
   const [inputLetter1, inputLetter2, inputLetter3, inputLetter4, inputLetter5] = getInputFields();
   
@@ -48,7 +50,7 @@ function getMatches() {
     }
   });
 
-  if (allWords) {
+  if (allWordsCb) {
     WORDS.allowed.forEach(sol => {
       if (wordMatches(sol, word, yellows, greys)) {
         allowedMatches.push(sol);
@@ -167,6 +169,27 @@ function updateScriptContent() {
 
 }
 
+function getWordsAndWriteResult() {
+  
+  const matches = getMatches();
+  const divs = document.body.querySelectorAll('.matches-container');
+
+  const showWordsCb = document.body.querySelector('#show-words-cb') as HTMLInputElement;
+  
+  if (showWordsCb?.checked) {
+    (divs[0] as HTMLDivElement).innerText = matches.solutionMatches.join(', ');
+    (divs[1] as HTMLDivElement).innerText = matches.allowedMatches.join(', ');
+  } else {
+
+    let len = matches.solutionMatches.length;
+    let str = len + ' ' + (len === 1 ? 'Solution' : 'Solutions');
+    (divs[0] as HTMLDivElement).innerText = str;
+
+    len = matches.allowedMatches.length;
+    str = len + ' ' + (len === 1 ? 'Solution' : 'Solutions');
+    (divs[1] as HTMLDivElement).innerText = str;
+  }
+}
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -188,10 +211,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const getWordsButton = document.querySelector('#GET_WORDS') as HTMLButtonElement;
 
   getWordsButton.addEventListener('click', () => {
-    const matches = getMatches();
-    const divs = document.body.querySelectorAll('.matches-container');
-    (divs[0] as HTMLDivElement).innerText = matches.solutionMatches.join(', ');
-    (divs[1] as HTMLDivElement).innerText = matches.allowedMatches.join(', ');
+    getWordsAndWriteResult();
+
+    addEasyTooltip(getWordsButton, {
+      text: 'Clicked',
+      classes: ['get-words-button-tooltip'],
+      duration: 1000
+    });
+
   });
 
   const resetButton = document.querySelector('#RESET_BTN') as HTMLButtonElement;
@@ -201,6 +228,9 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.forEach(el => {
       (el as HTMLInputElement).value = '';
     });
+
+    (elements.item(0) as HTMLInputElement)?.focus();
+
     elements = document.querySelectorAll('.form textarea');
     elements.forEach(el => {
       (el as HTMLTextAreaElement).value = '';
@@ -208,6 +238,12 @@ document.addEventListener('DOMContentLoaded', () => {
     elements = document.querySelectorAll('.form .matches-container');
     elements.forEach(el => {
       (el as HTMLDivElement).innerHTML = '';
+    });
+
+    addEasyTooltip(resetButton, {
+      text: 'Resetted',
+      classes: ['reset-button-tooltip'],
+      duration: 1000
     });
   });
 
@@ -243,6 +279,16 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedInputLetter.value = '_';
         inputLetters[Math.max(0, ind - 1)].focus();
       }
+    }
+
+    if (e.key === 'Enter' && ['INPUT', 'TEXTAREA'].includes((document.activeElement as HTMLElement).tagName)) {
+      getWordsAndWriteResult();
+
+      addEasyTooltip(getWordsButton, {
+        text: 'Pressed',
+        classes: ['get-words-button-tooltip'],
+        duration: 1000
+      });
     }
 
   });
